@@ -14,17 +14,20 @@
         }
 
         :root {
-            --color-black: #1a1a1a;
+            /* HALLOWEEN COLORS */
+            --color-black: #0d001a; /* Very Dark Purple/Black */
             --color-white: #f4f4f4;
-            --color-accent: #007bff;
-            --color-electric-blue: #00d4ff; 
-            --color-dark-glass: rgba(255, 255, 255, 0.05);
-            --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.1);
+            --color-accent: #ff5700; /* Deep Orange */
+            --color-electric-blue: #a020f0; /* Deep Purple Accent (New Electric Blue) */
+            --color-dark-glass: rgba(26, 0, 38, 0.9); /* Dark Purple Translucent */
+            --shadow-glass: 0 0 30px rgba(255, 140, 0, 0.4), 0 0 10px rgba(0, 0, 0, 0.8); /* Orange Glow Shadow */
+            --color-text-main: #f7a400; /* Spooky Orange */
         }
 
         body {
-            background-color: var(--color-white);
-            color: var(--color-black);
+            /* HALLOWEEN BODY */
+            background: #0d001a; /* Very Dark Purple/Black */
+            color: var(--color-text-main); /* Spooky Orange for main text */
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
@@ -39,13 +42,15 @@
             padding: 15px 30px;
             background: var(--color-black);
             color: var(--color-white);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 15px rgba(255, 87, 0, 0.4); /* Orange Shadow */
         }
 
         .logo-text {
             font-size: 1.8em;
             font-weight: bold;
             letter-spacing: 1px;
+            color: #ff5700; /* Deep Halloween Orange */
+            text-shadow: 2px 2px #5d00a0; /* Purple shadow for depth */
         }
 
         .contact-links {
@@ -63,12 +68,12 @@
         }
 
         .contact-links a:hover {
-            color: var(--color-electric-blue);
+            color: var(--color-electric-blue); /* Purple Hover */
         }
 
         #language-toggle {
             background: none;
-            color: var(--color-electric-blue);
+            color: var(--color-electric-blue); /* Purple */
             border: 1px solid var(--color-electric-blue);
             padding: 5px 10px;
             cursor: pointer;
@@ -82,7 +87,7 @@
             color: var(--color-black);
         }
 
-        /* === 3. ADAPTIVE MAIN LAYOUT === */
+        /* === 3. ADAPTIVE MAIN LAYOUT - GLASSY PANELS === */
         .main-container {
             display: flex;
             flex-grow: 1;
@@ -90,14 +95,18 @@
             gap: 25px;
         }
 
-        .preview-area {
-            flex: 3;
-            padding: 20px;
-            background: var(--color-dark-glass);
+        /* Apply Glass Effect to Main Panels */
+        .preview-area, .controls-panel {
+            padding: 25px;
+            background: var(--color-dark-glass); /* Dark Purple Translucent */
             border-radius: 12px;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: var(--shadow-glass);
+            border: 1px solid rgba(255, 87, 0, 0.2); /* Orange border */
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.3); /* Soft Orange Glow */
+        }
+
+        .preview-area {
+            flex: 3;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -107,16 +116,22 @@
 
         .controls-panel {
             flex: 1;
-            padding: 25px;
-            background: var(--color-dark-glass);
-            border-radius: 12px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: var(--shadow-glass);
             min-width: 300px;
         }
 
-        /* === 4. CONTROL ELEMENTS - GLASSY BUTTONS === */
+        /* Title in Control Panel */
+        #controls-title {
+            color: #ff5700; /* Deep Orange */
+        }
+
+        /* Separator Line */
+        .controls-panel hr {
+            margin: 15px 0; 
+            border-color: rgba(160, 32, 240, 0.5); /* Purple HR */
+        }
+
+
+        /* === 4. CONTROL ELEMENTS - SPOOKY BUTTONS === */
         .control-group {
             margin-bottom: 20px;
         }
@@ -129,117 +144,73 @@
 
         .format-btn {
             background: var(--color-black);
-            color: var(--color-white);
-            border: 1px solid var(--color-black);
+            color: var(--color-text-main); /* Orange Text */
+            border: 1px solid var(--color-electric-blue); /* Purple Border */
             padding: 10px 15px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
+            box-shadow: 0 0 5px rgba(160, 32, 240, 0.4);
         }
-        
-        /* Glassy Hover Effect */
+
+        /* Spooky Hover/Active Effect */
         .format-btn:hover, .format-btn.active {
-            background: var(--color-electric-blue);
+            background: #ff5700; /* Deep Orange */
             color: var(--color-black);
-            border-color: var(--color-electric-blue);
-            box-shadow: 0 0 10px var(--color-electric-blue); 
+            border-color: #ff5700;
+            box-shadow: 0 0 15px #ff5700; 
         }
-        
-        /* Decode Section Styles */
-        #decode-section label {
-            color: var(--color-black);
-            font-weight: bold;
-        }
-        #decode-input {
-            width: 100%;
-            min-height: 100px;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid var(--color-black);
+
+        /* Input Fields (Decode Section) */
+        #decode-input, #decode-format-select {
+            background-color: #2e004a; /* Darker Purple for Input */
+            color: #f7a400; /* Orange Text */
+            border: 1px solid var(--color-electric-blue);
             border-radius: 5px;
-            resize: vertical;
         }
-        #decode-btn {
+        #decode-input::placeholder {
+            color: rgba(247, 164, 0, 0.6); /* Lighter Orange Placeholder */
+        }
+
+        /* Decode Button */
+        #decode-btn, #download-decoded-btn {
             width: 100%;
-            background: var(--color-accent);
+            background: var(--color-electric-blue); /* Purple Button */
             color: var(--color-white);
             border: none;
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 10px; /* Space before download selector */
+            margin-bottom: 10px; 
+            box-shadow: 0 4px 10px rgba(160, 32, 240, 0.5);
         }
-        #decode-btn:hover {
-            background: var(--color-electric-blue);
+        #decode-btn:hover, #download-decoded-btn:hover {
+            background: #ff5700; /* Hover to Deep Orange */
             color: var(--color-black);
-            box-shadow: 0 0 10px var(--color-electric-blue);
-        }
-        
-        /* New Decode Download Elements */
-        #decode-download-group {
-            display: none; /* Initially hidden */
+            box-shadow: 0 0 15px #ff5700;
         }
 
-        #decode-format-select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-
-        #download-decoded-btn {
-            width: 100%;
-            background: var(--color-black);
-            color: var(--color-white);
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #download-decoded-btn:hover {
-            background: var(--color-electric-blue);
-            color: var(--color-black);
-            box-shadow: 0 0 10px var(--color-electric-blue);
-        }
-
-
+        /* Upload Area */
         #upload-area {
-            border: 2px dashed var(--color-black);
+            border: 3px dashed var(--color-text-main); /* Orange Dashed Border */
             padding: 50px;
             text-align: center;
             cursor: pointer;
             margin-bottom: 20px;
             width: 80%;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, background-color 0.3s;
         }
 
         #upload-area:hover {
-            border-color: var(--color-electric-blue);
+            border-color: var(--color-electric-blue); /* Purple Hover */
+            background-color: rgba(160, 32, 240, 0.1); /* Subtle Purple background on hover */
         }
 
-        #preview-img {
-            max-width: 90%;
-            max-height: 400px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        #decoded-img {
-            max-width: 90%; 
-            max-height: 400px; 
-            margin-top:20px; 
-            border-radius: 8px; 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
+        /* Download Button (Main) */
         #download-btn {
-            background: var(--color-black);
+            background: var(--color-accent); /* Deep Orange */
             color: var(--color-white);
             border: none;
             padding: 12px 25px;
@@ -249,27 +220,63 @@
             margin-top: 20px;
             width: 100%;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 87, 0, 0.5);
         }
 
         #download-btn:hover {
-            background: var(--color-electric-blue);
+            background: var(--color-electric-blue); /* Purple Hover */
             color: var(--color-black);
-            box-shadow: 0 0 15px var(--color-electric-blue);
+            box-shadow: 0 0 20px var(--color-electric-blue);
         }
 
-        /* Hide the default file input */
-        #file-input {
-            display: none;
+        /* Secret Info Colors */
+        #secret-txt-title, #secret-b64e-title {
+            color: #a020f0; /* Purple for Secret Titles */
         }
+
+        /* Preview Images */
+        #preview-img, #decoded-img {
+            box-shadow: 0 5px 20px rgba(255, 87, 0, 0.5); /* Orange Glow Shadow */
+        }
+
 
         /* === 5. FOOTER === */
         footer {
             text-align: center;
             padding: 15px;
             background: var(--color-black);
-            color: var(--color-white);
+            color: var(--color-text-main); /* Orange Text */
             font-size: 0.9em;
             margin-top: auto;
+            border-top: 1px solid rgba(160, 32, 240, 0.3); /* Purple Top Border */
+        }
+
+        /* === 6. RESPONSIVENESS (Maintain) === */
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+            .controls-panel {
+                min-width: unset;
+                width: 100%;
+            }
+            .preview-area {
+                min-height: 350px;
+                order: -1; /* Place preview area on top on mobile */
+            }
+            header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .contact-links {
+                justify-content: center;
+            }
+        }
+
+        /* Hide the default file input */
+        #file-input {
+            display: none;
         }
     </style>
 </head>
@@ -278,7 +285,7 @@
     <header>
         <div class="logo-text">BLACK LEO LLC</div>
         <div class="contact-links">
-            <button id="language-toggle">English</button>
+            <button id="language-toggle">English</button> 
             
             <a href="https://t.me/Black_Leo_LLC_Official" target="_blank">Telegram</a>
             <a href="https://invite.viber.com/?g2=AQA7UNs%2BcNGRwVWOYC3PAMzg6fi1LGGkAPXMZ5%2BdO6PTm9d5nzBwlxUVeyijAzHo" target="_blank">Viber</a> 
@@ -303,7 +310,7 @@
 
         <div class="controls-panel">
             <h2 id="controls-title">ပြောင်းလဲရေး ထိန်းချုပ်မှုများ</h2>
-            <hr style="margin: 15px 0; border-color: rgba(255, 255, 255, 0.1);">
+            <hr>
 
             <div class="control-group" id="decode-section">
                 <label id="decode-label">Base64 Code မှ ပုံပြန်ထုတ်ယူခြင်း</label>
@@ -320,8 +327,8 @@
                     </select>
                     <button id="download-decoded-btn">Download</button>
                 </div>
-                </div>
-            <hr style="margin: 15px 0; border-color: rgba(255, 255, 255, 0.1);">
+            </div>
+            <hr>
 
             <div class="control-group">
                 <label id="format-label">ရလဒ် Format ကို ရွေးချယ်ပါ:</label>
@@ -526,7 +533,12 @@
 
                 downloadBtn.textContent = LANG_DATA[currentLang].downloadBtn(selectedFormat);
                 downloadBtn.disabled = false;
+                
+                // Ensure default format (JPEG) is active on upload
+                formatButtons.forEach(btn => btn.classList.remove('active'));
                 document.querySelector('.format-btn[data-format="jpeg"]').classList.add('active');
+                selectedFormat = 'jpeg';
+                downloadBtn.textContent = LANG_DATA[currentLang].downloadBtn(selectedFormat);
             };
             reader.readAsDataURL(file);
         }
@@ -653,20 +665,20 @@
                     decodedImg.style.display = 'block';
                     previewImg.style.display = 'none'; // Hide regular preview
                     decodeStatus.textContent = LANG_DATA[currentLang].decodeSuccess;
-                    decodeStatus.style.color = 'green';
+                    decodeStatus.style.color = 'var(--color-text-main)'; // Use Halloween color for success
                     decodeDownloadGroup.style.display = 'block'; // Show download options
                 };
                 decodedImg.onerror = function() {
                     // Failure
                     decodedImg.style.display = 'none';
                     decodeStatus.textContent = LANG_DATA[currentLang].decodeError;
-                    decodeStatus.style.color = 'red';
+                    decodeStatus.style.color = '#ff5700'; // Deep Orange for error
                     decodeDownloadGroup.style.display = 'none';
                 };
 
             } catch (e) {
                 decodeStatus.textContent = LANG_DATA[currentLang].decodeError;
-                decodeStatus.style.color = 'red';
+                decodeStatus.style.color = '#ff5700'; // Deep Orange for error
             }
         }
         
@@ -676,7 +688,7 @@
         function downloadDecodedImage() {
             if (!lastDecodedDataURL) {
                 decodeStatus.textContent = LANG_DATA[currentLang].decodeErrorDownload;
-                decodeStatus.style.color = 'red';
+                decodeStatus.style.color = '#ff5700';
                 return;
             }
 
@@ -726,5 +738,4 @@
     </script>
 
 </body>
-
 </html>
