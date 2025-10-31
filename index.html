@@ -172,6 +172,15 @@
         #decode-input::placeholder {
             color: rgba(247, 164, 0, 0.6); /* Lighter Orange Placeholder */
         }
+        
+        /* === FIX 2: Textarea Resizing Fix === */
+        #decode-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            min-height: 100px;
+            resize: none; /* <--- HERE: Stop resizing */
+        }
 
         /* Decode Button */
         #decode-btn, #download-decoded-btn {
@@ -208,6 +217,16 @@
             background-color: rgba(160, 32, 240, 0.1); /* Subtle Purple background on hover */
         }
 
+        /* === FIX 1: Image Size Fix === */
+        #preview-img, #decoded-img {
+            max-width: 100%; /* Ensure image fits container width */
+            max-height: 500px; /* Restrict max height */
+            height: auto; /* Maintain aspect ratio */
+            box-shadow: 0 5px 20px rgba(255, 87, 0, 0.5); /* Orange Glow Shadow */
+            border-radius: 8px; /* Optional: adds a slight corner radius */
+            object-fit: contain; /* Ensures the entire image is visible within the bounds */
+        }
+
         /* Download Button (Main) */
         #download-btn {
             background: var(--color-accent); /* Deep Orange */
@@ -233,12 +252,6 @@
         #secret-txt-title, #secret-b64e-title {
             color: #a020f0; /* Purple for Secret Titles */
         }
-
-        /* Preview Images */
-        #preview-img, #decoded-img {
-            box-shadow: 0 5px 20px rgba(255, 87, 0, 0.5); /* Orange Glow Shadow */
-        }
-
 
         /* === 5. FOOTER === */
         footer {
@@ -272,6 +285,9 @@
             .contact-links {
                 justify-content: center;
             }
+            #upload-area {
+                width: 100%; /* Use full width on mobile */
+            }
         }
 
         /* Hide the default file input */
@@ -301,7 +317,8 @@
                 <p id="size-limit-text">အများဆုံး ဖိုင်အရွယ်အစား: 5MB</p>
                 <p id="file-status"></p>
             </div>
-            <img id="preview-img" src="#" alt="Image Preview">
+            
+            <img id="preview-img" style="display:none;" src="#" alt="Image Preview">
 
             <img id="decoded-img" style="display:none;" src="#" alt="Decoded Image">
             <p id="decode-status" style="margin-top:10px;"></p>
@@ -317,7 +334,7 @@
                 <textarea id="decode-input" placeholder="Base64 Code ကို ဒီနေရာတွင် ကူးထည့်ပါ..."></textarea>
                 <button id="decode-btn">ပုံအဖြစ် ပြန်ထုတ်ယူ (Decode)</button>
                 
-                <div id="decode-download-group">
+                <div id="decode-download-group" style="display:none;">
                     <label id="decode-format-label">Download Format:</label>
                     <select id="decode-format-select">
                         <option value="jpeg">JPEG</option>
@@ -333,7 +350,7 @@
             <div class="control-group">
                 <label id="format-label">ရလဒ် Format ကို ရွေးချယ်ပါ:</label>
                 <div class="format-buttons" id="format-select-group">
-                    <button class="format-btn" data-format="jpeg">JPEG (75%)</button>
+                    <button class="format-btn active" data-format="jpeg">JPEG (75%)</button>
                     <button class="format-btn" data-format="png">PNG</button>
                     <button class="format-btn" data-format="webp">WEBP</button>
                     <button class="format-btn" data-format="gif">GIF</button>
@@ -654,6 +671,7 @@
                     dataURL = code; // Full Data URL (from TXT output)
                 } else {
                     // Raw Base64 string (from B64E output) - Guess JPEG for initial load attempt
+                    // NOTE: This guessing might fail for other formats, a better solution would be to prompt the user for the original format.
                     dataURL = 'data:image/jpeg;base64,' + code; 
                 }
 
