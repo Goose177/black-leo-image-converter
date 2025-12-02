@@ -3,755 +3,1106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="doc-title">BLACK LEO LLC - ပုံပြောင်းလဲရေးကိရိယာ</title>
+    <title id="doc-title">BLACK LEO LLC - Standard Converter (v2.2)</title>
     <style>
-        /* === 1. RESET AND BASE STYLES === */
+        /* === 1. GLOBAL STYLES & FONT === */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother and more complex transition for effects */
         }
 
+        /* === 2. COLOR PALETTES (Updated Standard UI) === */
         :root {
-            /* HALLOWEEN COLORS */
-            --color-black: #0d001a; /* Very Dark Purple/Black */
-            --color-white: #f4f4f4;
-            --color-accent: #ff5700; /* Deep Orange */
-            --color-electric-blue: #a020f0; /* Deep Purple Accent (New Electric Blue) */
-            --color-dark-glass: rgba(26, 0, 38, 0.9); /* Dark Purple Translucent */
-            --shadow-glass: 0 0 30px rgba(255, 140, 0, 0.4), 0 0 10px rgba(0, 0, 0, 0.8); /* Orange Glow Shadow */
-            --color-text-main: #f7a400; /* Spooky Orange */
+            /* Standard Theme (Professional Blue/Dark) */
+            --color-std-bg-dark: #121212; 
+            --color-std-primary: #0077b6; /* Deep Blue */
+            --color-std-primary-light: #0096c7; /* Lighter Blue */
+            --color-std-white: #e0e0e0;
+            --color-std-glass: rgba(0, 119, 182, 0.1); /* Blue Tinted Glass */
+            --color-std-border: rgba(0, 119, 182, 0.3);
+
+            /* Premium Theme (True Gold) */
+            --color-prem-bg-dark: #0A0A0A; /* Deeper Black for contrast */
+            --color-prem-gold: #FFD700; /* True Gold */
+            --color-prem-gold-shadow: #C7A200;
+            --color-prem-glass: rgba(255, 215, 0, 0.05); /* Subtle Gold Tinted Glass */
+            --color-prem-border: rgba(255, 215, 0, 0.3);
+            --shadow-prem-glow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.2);
+            
+            /* Shared Styles */
+            --color-text-subtle: #8a8a8a;
+            --shadow-glass: 0 5px 25px rgba(0, 0, 0, 0.7);
+            --color-border-subtle: rgba(140, 140, 140, 0.2);
         }
 
+        /* === 3. BASE BODY STYLES & FOUC Protection === */
         body {
-            /* HALLOWEEN BODY */
-            background: #0d001a; /* Very Dark Purple/Black */
-            color: var(--color-text-main); /* Spooky Orange for main text */
-            line-height: 1.6;
+            background: var(--color-std-bg-dark);
+            color: var(--color-std-white); 
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            visibility: hidden; 
+        }
+        body.js-loaded {
+            visibility: visible;
         }
 
-        /* === 2. HEADER - ADAPTIVE TOP BAR === */
+        /* Views management - CRITICAL */
+        .view { display: none !important; }
+        .view.active { 
+            display: flex !important; 
+            flex-direction: column; 
+            flex-grow: 1;
+        }
+
+        /* === 4. HEADER STYLES === */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
-            background: var(--color-black);
-            color: var(--color-white);
-            box-shadow: 0 2px 15px rgba(255, 87, 0, 0.4); /* Orange Shadow */
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.8); 
+            border-bottom: 1px solid var(--color-border-subtle);
+            z-index: 10;
         }
 
         .logo-text {
             font-size: 1.8em;
-            font-weight: bold;
-            letter-spacing: 1px;
-            color: #ff5700; /* Deep Halloween Orange */
-            text-shadow: 2px 2px #5d00a0; /* Purple shadow for depth */
+            font-weight: 200;
+            letter-spacing: 3px;
         }
-
-        .contact-links {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        
+        /* Standard Logo */
+        #standard-header .logo-text {
+            color: var(--color-std-white); 
+            text-shadow: 0 0 10px rgba(0, 119, 182, 0.7);
         }
-
-        .contact-links a {
-            color: var(--color-white);
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
+        #standard-header .logo-text span {
+            color: var(--color-std-primary);
+            font-weight: 700;
         }
-
-        .contact-links a:hover {
-            color: var(--color-electric-blue); /* Purple Hover */
+        
+        /* Premium Logo (Gold) */
+        #premium-header .logo-text {
+            color: var(--color-prem-gold); 
+            text-shadow: var(--shadow-prem-glow);
         }
-
-        #language-toggle {
-            background: none;
-            color: var(--color-electric-blue); /* Purple */
-            border: 1px solid var(--color-electric-blue);
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.3s, color 0.3s;
+        #premium-header .logo-text span {
+            color: var(--color-std-white);
+            font-weight: 300;
         }
-
-        #language-toggle:hover {
-            background: var(--color-electric-blue);
-            color: var(--color-black);
-        }
-
-        /* === 3. ADAPTIVE MAIN LAYOUT - GLASSY PANELS === */
+        
+        /* === 5. COMMON LAYOUT AND GLASS EFFECT === */
         .main-container {
-            display: flex;
             flex-grow: 1;
             padding: 30px;
             gap: 25px;
+            max-width: 1500px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex; 
         }
 
-        /* Apply Glass Effect to Main Panels */
         .preview-area, .controls-panel {
-            padding: 25px;
-            background: var(--color-dark-glass); /* Dark Purple Translucent */
-            border-radius: 12px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 87, 0, 0.2); /* Orange border */
-            box-shadow: 0 0 20px rgba(255, 140, 0, 0.3); /* Soft Orange Glow */
-        }
-
-        .preview-area {
-            flex: 3;
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(15px); 
+            box-shadow: var(--shadow-glass); 
+            min-height: 550px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 500px;
-        }
-
-        .controls-panel {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        /* Title in Control Panel */
-        #controls-title {
-            color: #ff5700; /* Deep Orange */
-        }
-
-        /* Separator Line */
-        .controls-panel hr {
-            margin: 15px 0; 
-            border-color: rgba(160, 32, 240, 0.5); /* Purple HR */
-        }
-
-
-        /* === 4. CONTROL ELEMENTS - SPOOKY BUTTONS === */
-        .control-group {
-            margin-bottom: 20px;
-        }
-
-        .format-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .format-btn {
-            background: var(--color-black);
-            color: var(--color-text-main); /* Orange Text */
-            border: 1px solid var(--color-electric-blue); /* Purple Border */
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 5px rgba(160, 32, 240, 0.4);
-        }
-
-        /* Spooky Hover/Active Effect */
-        .format-btn:hover, .format-btn.active {
-            background: #ff5700; /* Deep Orange */
-            color: var(--color-black);
-            border-color: #ff5700;
-            box-shadow: 0 0 15px #ff5700; 
-        }
-
-        /* Input Fields (Decode Section) */
-        #decode-input, #decode-format-select {
-            background-color: #2e004a; /* Darker Purple for Input */
-            color: #f7a400; /* Orange Text */
-            border: 1px solid var(--color-electric-blue);
-            border-radius: 5px;
-        }
-        #decode-input::placeholder {
-            color: rgba(247, 164, 0, 0.6); /* Lighter Orange Placeholder */
+            text-align: center;
         }
         
-        /* === FIX 2: Textarea Resizing Fix === */
-        #decode-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            min-height: 100px;
-            resize: none; /* <--- HERE: Stop resizing */
+        /* Standard Glass */
+        #standard-view .preview-area, #standard-view .controls-panel {
+            background: var(--color-std-glass); 
+            border: 1px solid var(--color-std-border); 
+            box-shadow: 0 0 10px rgba(0, 119, 182, 0.3), 0 5px 25px rgba(0, 0, 0, 0.8);
         }
 
-        /* Decode Button */
-        #decode-btn, #download-decoded-btn {
-            width: 100%;
-            background: var(--color-electric-blue); /* Purple Button */
-            color: var(--color-white);
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 10px; 
-            box-shadow: 0 4px 10px rgba(160, 32, 240, 0.5);
+        /* Premium Glass (Gold) */
+        #premium-view .preview-area, #premium-view .controls-panel,
+        #premium-login .controls-panel { 
+            background: var(--color-prem-glass); 
+            border: 1px solid var(--color-prem-border); 
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3), 0 5px 25px rgba(0, 0, 0, 0.8);
         }
-        #decode-btn:hover, #download-decoded-btn:hover {
-            background: #ff5700; /* Hover to Deep Orange */
-            color: var(--color-black);
-            box-shadow: 0 0 15px #ff5700;
+
+        /* === 6. CONTROL ELEMENTS (Input/Buttons) - UI REVAMP === */
+        
+        /* Input/Textarea Base Style */
+        textarea, input[type="text"], input[type="password"], select {
+            padding: 12px;
+            border-radius: 10px; /* Improved rounding */
+            border: 1px solid #444;
+            background: #222;
+            color: var(--color-std-white);
+            font-size: 1em;
+            outline: none;
+            width: 100%;
+        }
+
+        /* --- BASE BUTTON STYLES (Applies to all) --- */
+        button {
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 10px; /* Standardize improved rounding */
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Add depth */
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* --- STANDARD BUTTONS (Blue Theme) --- */
+        
+        /* General Standard Buttons (Decode, Download, Login Btn) */
+        #standard-view button:not(.format-btn):not(#language-toggle):not(#premium-access-btn),
+        #premium-login button {
+            border: 2px solid var(--color-std-primary); /* Thicker border for impact */
+            background: var(--color-std-bg-dark); 
+            color: var(--color-std-primary-light); 
+        }
+        
+        #standard-view button:hover:not(:disabled):not(.format-btn):not(#language-toggle):not(#premium-access-btn),
+        #premium-login button:hover:not(:disabled) {
+            background: var(--color-std-primary);
+            color: var(--color-std-white);
+            box-shadow: 0 6px 15px rgba(0, 119, 182, 0.8), 0 0 20px rgba(0, 119, 182, 0.5); /* Stronger glow */
+            transform: translateY(-3px); /* Lift effect */
+        }
+
+        /* Standard Format Buttons (Grouped) */
+        #standard-view .format-btn {
+            border-radius: 20px; /* Pill shape for format buttons */
+            padding: 8px 15px;
+            border: 1px solid var(--color-std-border);
+            background: var(--color-std-bg-dark); 
+            color: var(--color-std-white); 
+        }
+
+        #standard-view .format-btn:hover:not(.active) {
+            background: rgba(0, 150, 199, 0.1);
+            border-color: var(--color-std-primary-light);
+            color: var(--color-std-primary-light);
+            box-shadow: 0 0 10px rgba(0, 150, 199, 0.5);
+            transform: scale(1.05); /* Zoom effect for feedback */
+        }
+        
+        #standard-view .format-btn.active, #standard-view #download-btn-std:not(:disabled) {
+            background: var(--color-std-primary); 
+            color: var(--color-std-white);
+            border-color: var(--color-std-primary);
+            box-shadow: 0 0 15px rgba(0, 119, 182, 0.8);
+            transform: translateY(-1px);
+        }
+        
+        /* Premium Access Button (Standard Page) - Gold button */
+        #premium-access-btn {
+            background: linear-gradient(45deg, var(--color-prem-gold), var(--color-prem-gold-shadow));
+            color: var(--color-prem-bg-dark);
+            font-weight: 700;
+            padding: 12px 20px; /* Make it slightly bigger */
+            border: none;
+            border-radius: 10px; 
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+        #premium-access-btn:hover {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.9);
+            transform: translateY(-2px);
+        }
+
+        /* --- PREMIUM BUTTONS (Gold Theme) --- */
+        
+        /* General Premium Buttons (Decode, Download) */
+        #premium-view button:not(.format-btn):not(#language-toggle-prem):not(#logout-btn) {
+            border: 2px solid var(--color-prem-gold-shadow);
+            background: var(--color-prem-bg-dark);
+            color: var(--color-prem-gold); 
+            box-shadow: var(--shadow-prem-glow);
+        }
+        
+        #premium-view button:hover:not(:disabled):not(.format-btn):not(#language-toggle-prem):not(#logout-btn) {
+            color: var(--color-prem-bg-dark);
+            background: var(--color-prem-gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 1.5), 0 0 30px rgba(255, 215, 0, 0.8); /* Intense Gold Glow */
+            transform: scale(1.02); /* Slight zoom for Premium feel */
+        }
+        
+        /* Premium Format Buttons (Grouped) */
+        #premium-view .format-btn {
+            border-radius: 25px; /* More extreme pill shape */
+            padding: 10px 18px;
+            font-size: 0.9em;
+            background: var(--color-prem-bg-dark);
+            color: var(--color-prem-gold); 
+            border: 1px solid var(--color-prem-border);
+            box-shadow: none; 
+        }
+        
+        #premium-view .format-btn:hover {
+            color: var(--color-prem-bg-dark);
+            background: var(--color-prem-gold);
+            box-shadow: 0 0 10px var(--color-prem-gold), inset 0 0 5px rgba(0,0,0,0.5);
+            transform: scale(1.05);
+        }
+
+        #premium-view .format-btn.active, #premium-view #download-btn-prem:not(:disabled) {
+            background: var(--color-prem-gold); 
+            color: var(--color-prem-bg-dark);
+            border-color: var(--color-prem-gold);
+            box-shadow: var(--shadow-prem-glow);
         }
 
         /* Upload Area */
-        #upload-area {
-            border: 3px dashed var(--color-text-main); /* Orange Dashed Border */
-            padding: 50px;
-            text-align: center;
+        .upload-area {
+            border: 3px dashed var(--color-text-subtle);
+            padding: 60px;
             cursor: pointer;
-            margin-bottom: 20px;
-            width: 80%;
-            transition: border-color 0.3s, background-color 0.3s;
+            margin-bottom: 25px;
+            width: 95%;
+            border-radius: 10px;
         }
+        
+        #standard-view .upload-area:hover { border-color: var(--color-std-primary-light); }
+        #premium-view .upload-area:hover { border-color: var(--color-prem-gold); }
 
-        #upload-area:hover {
-            border-color: var(--color-electric-blue); /* Purple Hover */
-            background-color: rgba(160, 32, 240, 0.1); /* Subtle Purple background on hover */
-        }
-
-        /* === FIX 1: Image Size Fix === */
-        #preview-img, #decoded-img {
-            max-width: 100%; /* Ensure image fits container width */
-            max-height: 500px; /* Restrict max height */
-            height: auto; /* Maintain aspect ratio */
-            box-shadow: 0 5px 20px rgba(255, 87, 0, 0.5); /* Orange Glow Shadow */
-            border-radius: 8px; /* Optional: adds a slight corner radius */
-            object-fit: contain; /* Ensures the entire image is visible within the bounds */
-        }
-
-        /* Download Button (Main) */
-        #download-btn {
-            background: var(--color-accent); /* Deep Orange */
-            color: var(--color-white);
-            border: none;
-            padding: 12px 25px;
+        /* Preview Elements */
+        #preview-img-std, #preview-video-std, #preview-audio-std,
+        #decoded-img-std, #decoded-video-std, #decoded-audio-std,
+        #preview-img-prem, #preview-video-prem, #preview-audio-prem,
+        #decoded-img-prem, #decoded-video-prem, #decoded-audio-prem {
+            max-width: 100%;
+            max-height: 400px;
+            height: auto;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin-top: 20px;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(255, 87, 0, 0.5);
+            margin-top: 15px;
+            object-fit: contain;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        #download-btn:hover {
-            background: var(--color-electric-blue); /* Purple Hover */
-            color: var(--color-black);
-            box-shadow: 0 0 20px var(--color-electric-blue);
+        /* Specific for Audio/Generic Message */
+        .preview-text {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 3px solid var(--color-std-primary);
+        }
+        #premium-view .preview-text { border-left: 3px solid var(--color-prem-gold); }
+
+        /* Format Buttons Layout */
+        .format-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap; 
+            justify-content: center;
         }
 
-        /* Secret Info Colors */
-        #secret-txt-title, #secret-b64e-title {
-            color: #a020f0; /* Purple for Secret Titles */
-        }
-
-        /* === 5. FOOTER === */
+        /* Footer styling */
         footer {
+            padding: 10px;
             text-align: center;
-            padding: 15px;
-            background: var(--color-black);
-            color: var(--color-text-main); /* Orange Text */
-            font-size: 0.9em;
-            margin-top: auto;
-            border-top: 1px solid rgba(160, 32, 240, 0.3); /* Purple Top Border */
+            font-size: 0.8em;
+            color: var(--color-text-subtle);
+            border-top: 1px solid var(--color-border-subtle);
         }
-
-        /* === 6. RESPONSIVENESS (Maintain) === */
+        
+        /* === 7. RESPONSIVENESS === */
         @media (max-width: 900px) {
-            .main-container {
-                flex-direction: column;
-                padding: 15px;
-            }
-            .controls-panel {
-                min-width: unset;
-                width: 100%;
-            }
-            .preview-area {
-                min-height: 350px;
-                order: -1; /* Place preview area on top on mobile */
-            }
-            header {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .contact-links {
-                justify-content: center;
-            }
-            #upload-area {
-                width: 100%; /* Use full width on mobile */
-            }
-        }
-
-        /* Hide the default file input */
-        #file-input {
-            display: none;
+            .main-container { flex-direction: column; padding: 15px; }
+            .controls-panel { min-width: unset; width: 100%; }
+            .preview-area { min-height: 300px; order: -1; }
+            header { flex-direction: column; gap: 10px; }
+            #upload-area { width: 100%; padding: 40px; }
         }
     </style>
 </head>
-<body>
+<body onload="initApp()">
 
-    <header>
-        <div class="logo-text">BLACK LEO LLC</div>
-        <div class="contact-links">
-            <button id="language-toggle">English</button> 
-            
-            <a href="https://t.me/Black_Leo_LLC_Official" target="_blank">Telegram</a>
-            <a href="https://invite.viber.com/?g2=AQA7UNs%2BcNGRwVWOYC3PAMzg6fi1LGGkAPXMZ5%2BdO6PTm9d5nzBwlxUVeyijAzHo" target="_blank">Viber</a> 
-            <a href="mailto:gamingboxlin@gmail.com">Email</a>
-        </div>
-    </header>
-
-    <div class="main-container">
-        <div class="preview-area">
-            <input type="file" id="file-input" accept="image/*">
-            <div id="upload-area" onclick="document.getElementById('file-input').click()">
-                <h3 id="upload-title">ပုံထည့်ရန် နှိပ်ပါ သို့မဟုတ် ဆွဲထည့်ပါ</h3>
-                <p id="size-limit-text">အများဆုံး ဖိုင်အရွယ်အစား: 5MB</p>
-                <p id="file-status"></p>
-            </div>
-            
-            <img id="preview-img" style="display:none;" src="#" alt="Image Preview">
-
-            <img id="decoded-img" style="display:none;" src="#" alt="Decoded Image">
-            <p id="decode-status" style="margin-top:10px;"></p>
-
-        </div>
-
-        <div class="controls-panel">
-            <h2 id="controls-title">ပြောင်းလဲရေး ထိန်းချုပ်မှုများ</h2>
-            <hr>
-
-            <div class="control-group" id="decode-section">
-                <label id="decode-label">Base64 Code မှ ပုံပြန်ထုတ်ယူခြင်း</label>
-                <textarea id="decode-input" placeholder="Base64 Code ကို ဒီနေရာတွင် ကူးထည့်ပါ..."></textarea>
-                <button id="decode-btn">ပုံအဖြစ် ပြန်ထုတ်ယူ (Decode)</button>
+    <div id="premium-login" class="view">
+        <div class="main-container" style="justify-content: center; align-items: center; min-height: 100vh;">
+            <div class="controls-panel" style="width: 400px; max-width: 90%; text-align: left;">
+                <h2 style="text-align: center; margin-bottom: 20px; color: var(--color-prem-gold);">BLACK LEO PREMIUM ဝင်ရောက်ခြင်း</h2>
+                <hr style="border-color: var(--color-prem-border);">
                 
-                <div id="decode-download-group" style="display:none;">
-                    <label id="decode-format-label">Download Format:</label>
-                    <select id="decode-format-select">
-                        <option value="jpeg">JPEG</option>
-                        <option value="png">PNG</option>
-                        <option value="webp">WEBP</option>
-                        <option value="gif">GIF</option>
-                    </select>
-                    <button id="download-decoded-btn">Download</button>
-                </div>
+                <label for="login-input" style="color: var(--color-std-white); display: block; margin-bottom: 10px;">Activation Code ထည့်ပါ:</label>
+                <input type="password" id="login-input" placeholder="လျှို့ဝှက်ကုဒ်..." required>
+                
+                <button id="premium-login-btn" style="width: 100%; margin-top: 15px;">ဝင်ရန်</button> 
+                <p id="login-status" style="margin-top: 15px; text-align: center; color: var(--color-prem-gold-shadow);"></p>
             </div>
-            <hr>
-
-            <div class="control-group">
-                <label id="format-label">ရလဒ် Format ကို ရွေးချယ်ပါ:</label>
-                <div class="format-buttons" id="format-select-group">
-                    <button class="format-btn active" data-format="jpeg">JPEG (75%)</button>
-                    <button class="format-btn" data-format="png">PNG</button>
-                    <button class="format-btn" data-format="webp">WEBP</button>
-                    <button class="format-btn" data-format="gif">GIF</button>
-                    <button class="format-btn" data-format="bmp">BMP</button>
-                    <button class="format-btn" data-format="tiff">TIFF</button>
-                    <button class="format-btn" data-format="txt">TXT (လျှို့ဝှက် Code)</button>
-                    <button class="format-btn" data-format="b64e">Base64 Encode</button>
-                </div>
-            </div>
-
-            <div class="control-group" id="quality-display">
-                <label id="quality-label">အရည်အသွေး:</label>
-                <p id="quality-info">JPEG အရည်အသွေးကို ဝဘ်အတွက် အသင့်တော်ဆုံးဖြစ်စေရန် 75% ဖြင့် သတ်မှတ်ထားပါသည်။</p>
-            </div>
-
-            <div class="control-group" id="secret-info-txt" style="display:none;">
-                <label style="color:var(--color-electric-blue);" id="secret-txt-title">လျှို့ဝှက် TXT အချက်အလက်:</label>
-                <p id="secret-txt-desc">ပုံအချက်အလက်များကို Base64 စာသား Code အဖြစ် ပြောင်းလဲပေးပါမည်။ ဒေတာထည့်သွင်းရန်အတွက်သာ အသုံးပြုနိုင်ပါသည်။</p>
-            </div>
-
-            <div class="control-group" id="secret-info-b64e" style="display:none;">
-                <label style="color:var(--color-electric-blue);" id="secret-b64e-title">လျှို့ဝှက် Encode အချက်အလက်:</label>
-                <p id="secret-b64e-desc">ပုံ၏ Binary အချက်အလက်များကို Base64 Stream အဖြစ်သာ ထုတ်ယူပြီး ဖိုင်တစ်ခုအနေဖြင့် သိမ်းဆည်းပေးပါမည်။</p>
-            </div>
-            
-            <button id="download-btn" disabled>ပုံထည့်သွင်းပြီး စတင်ပါ</button>
-
         </div>
     </div>
 
-    <footer>
-        Black Leo LLC &copy; 2025
-    </footer>
+    <div id="standard-view" class="view">
+        <header id="standard-header">
+            <div class="logo-text">BLACK <span>LEO</span> LLC<span class="version-tag" style="color: var(--color-std-primary);"> v2.2</span></div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button id="premium-access-btn">အထူးအသုံးပြုသူများသာ ဝင်ရန်</button> 
+                <div class="contact-links">
+                    <button id="language-toggle" style="background: none; color: var(--color-std-primary); border: 1px solid var(--color-std-primary); padding: 5px 10px; border-radius: 5px; cursor: pointer;">English</button> 
+                    <a href="https://t.me/Black_Leo_LLC_Official" target="_blank" style="color: var(--color-std-primary); text-decoration: none;">Telegram</a>
+                    <a href="https://invite.viber.com/?g2=AQA7UNs%2BcNGRwVWOYC3PAMzg6fi1LGGkAPXMZ5%2BdO6PTm9d5nzBwlxUVeyijAzHo" target="_blank" style="color: var(--color-std-primary); text-decoration: none;">Viber</a> 
+                </div>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <div class="preview-area">
+                <input type="file" id="file-input-std" accept="*/*" style="display:none;">
+                <div id="upload-area-std" class="upload-area" onclick="document.getElementById('file-input-std').click()">
+                    <h3 id="upload-title-std">မည်သည့်ဖိုင်ကိုမဆို ထည့်ရန် နှိပ်ပါ သို့မဟုတ် ဆွဲထည့်ပါ</h3>
+                    <p id="size-limit-text-std">အများဆုံး ဖိုင်အရွယ်အစား: 25MB</p>
+                    <p id="file-status-std"></p>
+                </div>
+                
+                <img id="preview-img-std" style="display:none;" src="#" alt="File Preview">
+                <video id="preview-video-std" style="display:none;" controls src="#" alt="File Preview"></video>
+                <audio id="preview-audio-std" style="display:none; width: 80%;" controls src="#" alt="File Preview"></audio>
+
+                <p id="generic-preview-message-std" class="preview-text" style="display:none;"></p>
+
+                <img id="decoded-img-std" style="display:none;" src="#" alt="Decoded Image">
+                <video id="decoded-video-std" style="display:none;" controls src="#" alt="Decoded Video"></video>
+                <audio id="decoded-audio-std" style="display:none; width: 80%;" controls src="#" alt="Decoded Audio"></audio>
+                <p id="decode-status-std" style="margin-top:15px;"></p>
+            </div>
+
+            <div class="controls-panel">
+                <h2 id="controls-title-std" style="color: var(--color-std-primary-light);">ပြောင်းလဲရေး ထိန်းချုပ်မှုများ</h2>
+                <hr style="border-color: var(--color-border-subtle);">
+
+                <div class="control-group">
+                    <label id="decode-label-std" style="display:block; margin-bottom: 8px;">Base64 Code မှ ဖိုင် ပြန်ထုတ်ယူခြင်း</label>
+                    <textarea id="decode-input-std" placeholder="Base64 Code ကို ဒီနေရာတွင် ကူးထည့်ပါ..." style="width:100%; min-height: 120px; resize: none;"></textarea>
+                    <button id="decode-btn-std" style="width: 100%; margin-top: 10px;">ဖိုင်အဖြစ် ပြန်ထုတ်ယူ (Decode)</button>
+                    
+                    <div id="decode-download-group-std" style="display:none; margin-top: 15px;">
+                        <label id="decode-format-label-std" style="display:block; margin-bottom: 5px;">Download Extension:</label>
+                        <input type="text" id="decoded-filename-input-std" placeholder="ဥပမာ: .mp3 သို့မဟုတ် .html" style="width:100%; margin-bottom:10px;">
+                        <button id="download-decoded-btn-std" style="width: 100%;">Download</button>
+                    </div>
+                </div>
+                <hr style="border-color: var(--color-border-subtle);">
+
+                <div class="control-group">
+                    <label id="format-label-std" style="display:block; margin-bottom: 8px;">ရလဒ် Format ကို ရွေးချယ်ပါ:</label>
+                    <div class="format-buttons" id="format-select-group-std">
+                        <button class="format-btn active" data-format="txt">TXT (Data URL)</button>
+                        <button class="format-btn" data-format="b64e">Base64 Encode (Raw)</button>
+                    </div>
+                    <p id="universal-info-std" style="color:var(--color-text-subtle); font-size: 0.9em; margin-top: 10px;">
+                        ဖိုင်အမျိုးအစားအားလုံးကို Base64 Code အဖြစ် ပြောင်းလဲနိုင်ပါသည်။
+                    </p>
+                </div>
+                
+                <button id="download-btn-std" disabled style="width: 100%; font-size: 1.2em; margin-top: 20px;">ဖိုင်ထည့်သွင်းပြီး စတင်ပါ</button>
+            </div>
+        </div>
+        <footer>
+            Black Leo LLC &copy; 2025 | Version 2.2 (Standard)
+        </footer>
+    </div>
+    
+    <div id="premium-view" class="view" style="background: var(--color-prem-bg-dark);">
+        <header id="premium-header">
+            <div class="logo-text">BLACK LEO LCC <span>PREMIUM</span><span class="version-tag" style="color: var(--color-prem-gold-shadow);"> v2.2</span></div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button id="logout-btn" style="background: none; color: var(--color-text-subtle); border: 1px solid var(--color-prem-border); padding: 10px 15px; border-radius: 8px; cursor: pointer; box-shadow: none;">ထွက်ရန်</button>
+                <div class="contact-links">
+                    <button id="language-toggle-prem" style="background: none; color: var(--color-prem-gold); border: 1px solid var(--color-prem-gold); padding: 5px 10px; border-radius: 5px; cursor: pointer; box-shadow: none;">English</button> 
+                    <a href="mailto:gamingboxlin@gmail.com" style="color: var(--color-prem-gold); text-decoration: none;">Email</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <div class="preview-area">
+                <input type="file" id="file-input-prem" accept="*/*" style="display:none;">
+                <div id="upload-area-prem" class="upload-area" onclick="document.getElementById('file-input-prem').click()">
+                    <h3 id="upload-title-prem" style="color: var(--color-prem-gold);">မည်သည့်ဖိုင်ကိုမဆို ထည့်ရန် နှိပ်ပါ သို့မဟုတ် ဆွဲထည့်ပါ</h3>
+                    <p id="file-limit-text-premium" style="color: var(--color-prem-gold); font-weight: 600;">ဖိုင်အရွယ်အစား ကန့်သတ်ချက် - UNLIMITED</p>
+                    <p id="file-status-prem" style="color: var(--color-prem-gold);"></p>
+                </div>
+                
+                <img id="preview-img-prem" style="display:none;" src="#" alt="File Preview">
+                <video id="preview-video-prem" style="display:none;" controls src="#" alt="File Preview"></video>
+                <audio id="preview-audio-prem" style="display:none; width: 80%;" controls src="#" alt="File Preview"></audio>
+
+                <p id="generic-preview-message-prem" class="preview-text" style="display:none;"></p>
+
+                <img id="decoded-img-prem" style="display:none;" src="#" alt="Decoded Image">
+                <video id="decoded-video-prem" style="display:none;" controls src="#" alt="Decoded Video"></video>
+                <audio id="decoded-audio-prem" style="display:none; width: 80%;" controls src="#" alt="Decoded Audio"></audio>
+                <p id="decode-status-prem" style="margin-top:15px; color: var(--color-prem-gold);"></p>
+
+            </div>
+
+            <div class="controls-panel">
+                <h2 id="controls-title-prem" style="color: var(--color-prem-gold);">PREMIUM ထိန်းချုပ်မှုများ</h2>
+                <hr style="border-color: var(--color-prem-border);">
+
+                <div class="control-group">
+                    <label id="decode-label-prem" style="display:block; margin-bottom: 8px;">Secure Code မှ ဖိုင် ပြန်ထုတ်ယူခြင်း</label>
+                    <textarea id="decode-input-prem" placeholder="Secure Code ကို ဒီနေရာတွင် ကူးထည့်ပါ..." style="width:100%; min-height: 120px; resize: none;"></textarea>
+                    
+                    <div id="instant-preview-area" style="margin-top: 10px; display: block; text-align: left;">
+                        <button id="instant-preview-btn" style="background: none; color: var(--color-text-subtle); border: 1px solid var(--color-prem-border); width: 100%; padding: 8px; border-radius: 10px; box-shadow: none;">Instant Preview (ကုဒ်ကိုချက်ချင်းကြည့်ရန်)</button>
+                        <div id="instant-preview-display" style="margin-top: 10px; max-height: 120px; overflow-y: auto; text-align: left; background: rgba(0, 0, 0, 0.4); padding: 10px; border-radius: 5px; color: var(--color-text-subtle); font-size: 0.8em; white-space: pre-wrap; word-wrap: break-word;"></div>
+                    </div>
+                    
+                    <button id="decode-btn-prem" style="width: 100%; margin-top: 10px;">ဖိုင်အဖြစ် ပြန်ထုတ်ယူ (Decode)</button>
+                    
+                    <div id="decode-download-group-prem" style="display:none; margin-top: 15px;">
+                        <label id="decode-format-label-prem" style="display:block; margin-bottom: 5px;">Download Extension:</label>
+                        <input type="text" id="decoded-filename-input-prem" placeholder="ဥပမာ: .mp3 သို့မဟုတ် .html" style="width:100%; margin-bottom:10px;">
+                        <p id="mime-type-display" style="font-size: 0.9em; margin-bottom: 10px; color: var(--color-prem-gold); text-align: left;">MIME: N/A</p>
+                        <button id="download-decoded-btn-prem" style="width: 100%;">Download</button>
+                    </div>
+                </div>
+                <hr style="border-color: var(--color-prem-border);">
+
+                <div class="control-group">
+                    <label id="format-label-prem" style="display:block; margin-bottom: 8px; color: var(--color-prem-gold);">လုံခြုံမှုအမြင့်ဆုံး Format ရွေးချယ်ပါ:</label>
+                    <div class="format-buttons" id="format-select-group-prem">
+                        <button class="format-btn active" data-format="aes" style="flex-grow: 1;">AES-256 Encrypt (Advanced)</button>
+                        <button class="format-btn" data-format="xor" style="flex-grow: 1;">XOR Scramble (Ultra Secure)</button>
+                    </div>
+                    <p id="universal-info-prem" style="color:var(--color-text-subtle); font-size: 0.9em; margin-top: 10px; text-align: left;">
+                       ဤရွေးချယ်မှုများသည် Base64 အပြင် ထပ်ဆင့်လုံခြုံရေး Code များ အသုံးပြုထားပါသည်။
+                    </p>
+                </div>
+                
+                <button id="download-btn-prem" disabled style="width: 100%; font-size: 1.2em; margin-top: 20px;">ဖိုင်ထည့်သွင်းပြီး စတင်ပါ</button>
+            </div>
+        </div>
+        <footer>
+            Black Leo LLC &copy; 2025 | Version 2.2 (Premium)
+        </footer>
+    </div>
+
 
     <script>
-        // === JAVASCRIPT: LANGUAGE and FUNCTIONALITY ===
+        // === JAVASCRIPT: CORE LOGIC v2.2 (UI/Download/Auto-Ext Logic) ===
 
-        const FILE_SIZE_LIMIT = 5 * 1024 * 1024; // 5MB in bytes
-        const JPEG_QUALITY = 0.75; // 75%
-        let selectedFile = null; // For regular upload
-        let selectedFormat = 'jpeg'; // For regular conversion
-        let isImageLoaded = false;
-        let currentLang = 'my'; // Default to Myanmar
-        let lastDecodedDataURL = null; // Stores the URL of the last decoded image
+        const ACTIVATION_CODES = [
+            'TTT2011', 'WMHXBLACKLEOLCC', 'Code2012', 
+            'ULTRASUB', 'GOLDENKEY', 'ALPHA_BLL', 'SECRET777', 'MAXIMUM88'
+        ];
+        const STANDARD_LIMIT = 25 * 1024 * 1024; // 25MB
+        const PREMIUM_LIMIT = Infinity; 
+        
+        let currentView = 'standard'; 
+        let currentLang = 'my'; 
 
-        // --- LANGUAGE DATA ---
+        // --- DOM Elements Grouped by View ---
+        const VIEWS = {
+            login: document.getElementById('premium-login'),
+            standard: document.getElementById('standard-view'),
+            premium: document.getElementById('premium-view')
+        };
+        
+        // Standard View Elements
+        const STD = {
+            fileInput: document.getElementById('file-input-std'),
+            fileStatus: document.getElementById('file-status-std'),
+            formatButtons: document.querySelectorAll('#format-select-group-std .format-btn'),
+            downloadBtn: document.getElementById('download-btn-std'),
+            previewImg: document.getElementById('preview-img-std'),
+            previewVideo: document.getElementById('preview-video-std'),
+            previewAudio: document.getElementById('preview-audio-std'), 
+            genericMessage: document.getElementById('generic-preview-message-std'),
+            decodeBtn: document.getElementById('decode-btn-std'),
+            decodeInput: document.getElementById('decode-input-std'),
+            decodedImg: document.getElementById('decoded-img-std'),
+            decodedVideo: document.getElementById('decoded-video-std'),
+            decodedAudio: document.getElementById('decoded-audio-std'), 
+            decodeStatus: document.getElementById('decode-status-std'),
+            downloadDecodedBtn: document.getElementById('download-decoded-btn-std'),
+            decodeDownloadGroup: document.getElementById('decode-download-group-std'),
+            decodedFilenameInput: document.getElementById('decoded-filename-input-std'),
+            languageToggle: document.getElementById('language-toggle'),
+            premiumAccessBtn: document.getElementById('premium-access-btn')
+        };
+        
+        // Premium View Elements
+        const PREM = {
+            fileInput: document.getElementById('file-input-prem'),
+            fileStatus: document.getElementById('file-status-prem'),
+            formatButtons: document.querySelectorAll('#format-select-group-prem .format-btn'),
+            downloadBtn: document.getElementById('download-btn-prem'),
+            previewImg: document.getElementById('preview-img-prem'),
+            previewVideo: document.getElementById('preview-video-prem'),
+            previewAudio: document.getElementById('preview-audio-prem'), 
+            genericMessage: document.getElementById('generic-preview-message-prem'),
+            decodeBtn: document.getElementById('decode-btn-prem'),
+            decodeInput: document.getElementById('decode-input-prem'),
+            decodedImg: document.getElementById('decoded-img-prem'),
+            decodedVideo: document.getElementById('decoded-video-prem'),
+            decodedAudio: document.getElementById('decoded-audio-prem'), 
+            decodeStatus: document.getElementById('decode-status-prem'),
+            downloadDecodedBtn: document.getElementById('download-decoded-btn-prem'),
+            decodeDownloadGroup: document.getElementById('decode-download-group-prem'),
+            decodedFilenameInput: document.getElementById('decoded-filename-input-prem'),
+            languageToggle: document.getElementById('language-toggle-prem'),
+            logoutBtn: document.getElementById('logout-btn'),
+            instantPreviewBtn: document.getElementById('instant-preview-btn'), 
+            instantPreviewDisplay: document.getElementById('instant-preview-display'), 
+            instantPreviewArea: document.getElementById('instant-preview-area'), 
+            mimeTypeDisplay: document.getElementById('mime-type-display') 
+        };
+
+        // Login Elements
+        const LOGIN = {
+            input: document.getElementById('login-input'),
+            button: document.getElementById('premium-login-btn'),
+            status: document.getElementById('login-status')
+        };
+
+        // State variables
+        let selectedFile_std = null; 
+        let selectedFormat_std = 'txt'; 
+        let isFileLoaded_std = false;
+        let lastDecodedDataURL_std = null;
+        
+        let selectedFile_prem = null; 
+        let selectedFormat_prem = 'aes'; 
+        let isFileLoaded_prem = false;
+        let lastDecodedDataURL_prem = null;
+        let lastDecodedMIME_prem = 'N/A'; 
+
+        // --- LANGUAGE DATA (Simplified for two formats) ---
         const LANG_DATA = {
             'my': {
                 toggle: 'English',
-                docTitle: 'ပုံပြောင်းလဲရေးကိရိယာ',
-                uploadTitle: 'ပုံထည့်ရန် နှိပ်ပါ သို့မဟုတ် ဆွဲထည့်ပါ',
-                sizeLimit: 'အများဆုံး ဖိုင်အရွယ်အစား: 5MB',
-                controlsTitle: 'ပြောင်းလဲရေး ထိန်းချုပ်မှုများ',
-                formatLabel: 'ရလဒ် Format ကို ရွေးချယ်ပါ:',
-                qualityLabel: 'အရည်အသွေး:',
-                qualityInfo: 'JPEG အရည်အသွေးကို ဝဘ်အတွက် အသင့်တော်ဆုံးဖြစ်စေရန် 75% ဖြင့် သတ်မှတ်ထားပါသည်။',
+                docTitleStd: 'Standard Converter (v2.2)',
+                docTitlePrem: 'Premium Converter (v2.2)',
+                uploadTitle: 'မည်သည့်ဖိုင်ကိုမဆို ထည့်ရန် နှိပ်ပါ သို့မဟုတ် ဆွဲထည့်ပါ',
+                sizeLimitStd: 'အများဆုံး ဖိုင်အရွယ်အစား: 25MB',
+                sizeLimitPrem: 'ဖိုင်အရွယ်အစား ကန့်သတ်ချက် - UNLIMITED',
+                controlsTitleStd: 'ပြောင်းလဲရေး ထိန်းချုပ်မှုများ',
+                controlsTitlePrem: 'PREMIUM ထိန်းချုပ်မှုများ',
+                formatLabelStd: 'ရလဒ် Format ကို ရွေးချယ်ပါ:',
+                formatLabelPrem: 'လုံခြုံမှုအမြင့်ဆုံး Format ရွေးချယ်ပါ:',
                 statusLoaded: 'ဖိုင်ထည့်ပြီးပါပြီ:',
-                statusStart: 'ပုံထည့်သွင်းပြီး စတင်ပါ',
+                statusStart: 'ဖိုင်ထည့်သွင်းပြီး စတင်ပါ',
                 downloadBtn: (format) => `${format.toUpperCase()} သို့ ပြောင်းလဲပြီး Download`,
-                alertSize: 'ဖိုင်အရွယ်အစား ကြီးလွန်းသည်။ အများဆုံး 5MB ဖြစ်ရမည်။',
-                secretTxtTitle: 'လျှို့ဝှက် TXT အချက်အလက်:',
-                secretTxtDesc: 'ပုံအချက်အလက်များကို Base64 စာသား Code အဖြစ် ပြောင်းလဲပေးပါမည်။ ဒေတာထည့်သွင်းရန်အတွက်သာ အသုံးပြုနိုင်ပါသည်။',
-                secretB64eTitle: 'လျှို့ဝှက် Encode အချက်အလက်:',
-                secretB64eDesc: 'ပုံ၏ Binary အချက်အလက်များကို Base64 Stream အဖြစ်သာ ထုတ်ယူပြီး ဖိုင်တစ်ခုအနေဖြင့် သိမ်းဆည်းပေးပါမည်။',
-                formatTxt: 'TXT (လျှို့ဝှက် Code)',
-                formatB64e: 'Base64 Encode',
-                decodeLabel: 'Base64 Code မှ ပုံပြန်ထုတ်ယူခြင်း',
-                decodePlaceholder: 'Base64 Code ကို ဒီနေရာတွင် ကူးထည့်ပါ...',
-                decodeBtn: 'ပုံအဖြစ် ပြန်ထုတ်ယူ (Decode)',
-                decodeFormatLabel: 'Download Format:',
+                alertSize: `ဖိုင်အရွယ်အစား ကြီးလွန်းသည်။ အများဆုံး 25MB ဖြစ်ရမည်။`,
+                formatTxt: 'TXT (Data URL)',
+                formatB64e: 'Base64 Encode (Raw)',
+                formatAes: 'AES-256 Encrypt (Advanced)',
+                formatXor: 'XOR Scramble (Ultra Secure)',
+                decodeLabel: 'Base64 Code မှ ဖိုင် ပြန်ထုတ်ယူခြင်း',
+                decodeLabelPrem: 'Secure Code မှ ဖိုင် ပြန်ထုတ်ယူခြင်း',
+                decodePlaceholder: 'Code ကို ဒီနေရာတွင် ကူးထည့်ပါ...',
+                decodeBtn: 'ဖိုင်အဖြစ် ပြန်ထုတ်ယူ (Decode)',
+                decodeFormatLabel: 'Download Extension:',
                 downloadDecodedBtn: 'Download',
-                decodeSuccess: 'ပုံကို အောင်မြင်စွာ ပြန်လည်ထုတ်ယူခဲ့ပါသည်။',
-                decodeError: 'Code မှားယွင်းနေပါသည်။ Base64 Code အစစ်အမှန်ဟုတ်/မဟုတ် စစ်ဆေးပါ။',
-                decodeErrorDownload: 'Download လုပ်ရန်အတွက် ပုံကိုအရင်ဆုံး Decode လုပ်ပေးပါ။'
+                decodeSuccess: 'ဖိုင်ကို အောင်မြင်စွာ ပြန်လည်ထုတ်ယူခဲ့ပါသည်။',
+                decodeError: 'Code မှားယွင်းနေပါသည်။ ထပ်မံစစ်ဆေးပါ။',
+                decodeErrorDownload: 'Download လုပ်ရန်အတွက် ဖိုင်ကိုအရင်ဆုံး Decode လုပ်ပေးပါ။',
+                decodedFilenamePlaceholder: 'ဥပမာ: .mp3 သို့မဟုတ် .html',
+                genericFileMessage: 'File အမျိုးအစား (ဥပမာ: HTML, MP3) ထည့်သွင်းထားပါသည်၊ Base64 Code အဖြစ် ပြောင်းလဲပေးပါမည်။',
+                loginSuccess: 'Login အောင်မြင်ပါပြီ။ Premium စာမျက်နှာသို့ ခေါ်ဆောင်သွားပါမည်။',
+                loginError: 'Activation Code မမှန်ပါ။ ထပ်မံကြိုးစားပါ။',
+                instantPreview: 'Instant Preview (ကုဒ်ကိုချက်ချင်းကြည့်ရန်)'
             },
             'en': {
                 toggle: 'မြန်မာ',
-                docTitle: 'Image Converter Tool',
-                uploadTitle: 'Click or Drag & Drop Image Here',
-                sizeLimit: 'Max file size: 5MB',
-                controlsTitle: 'Conversion Controls',
-                formatLabel: 'Choose Output Format:',
-                qualityLabel: 'Quality:',
-                qualityInfo: 'JPEG quality is fixed at 75% for optimized web use.',
+                docTitleStd: 'Standard Converter (v2.2)',
+                docTitlePrem: 'Premium Converter (v2.2)',
+                uploadTitle: 'Click or Drag & Drop Any File Here',
+                sizeLimitStd: 'Max file size: 25MB',
+                sizeLimitPrem: 'File Size Limit - UNLIMITED',
+                controlsTitleStd: 'Conversion Controls',
+                controlsTitlePrem: 'PREMIUM Controls',
+                formatLabelStd: 'Choose Output Format:',
+                formatLabelPrem: 'Choose Highest Security Format:',
                 statusLoaded: 'File loaded:',
-                statusStart: 'Upload Image to Start',
+                statusStart: 'Upload File to Start',
                 downloadBtn: (format) => `Convert & Download to ${format.toUpperCase()}`,
-                alertSize: 'File is too large! Maximum size is 5MB.',
-                secretTxtTitle: 'Secret TXT Info:',
-                secretTxtDesc: 'Converts image data into Base64 text code. Use for data embedding, not for viewing the image.',
-                secretB64eTitle: 'Secret Encode Info:',
-                secretB64eDesc: 'Extracts the image\'s binary data as a Base64 stream and saves it as a file.',
-                formatTxt: 'TXT (Secret Code)',
-                formatB64e: 'Base64 Encode',
-                decodeLabel: 'Decode Image from Base64 Code',
-                decodePlaceholder: 'Paste Base64 Code here...',
-                decodeBtn: 'Decode Image',
-                decodeFormatLabel: 'Download Format:',
+                alertSize: 'File is too large! Maximum size is 25MB.',
+                formatTxt: 'TXT (Data URL)',
+                formatB64e: 'Base64 Encode (Raw)',
+                formatAes: 'AES-256 Encrypt (Advanced)',
+                formatXor: 'XOR Scramble (Ultra Secure)',
+                decodeLabel: 'Decode File from Base64 Code',
+                decodeLabelPrem: 'Decode File from Secure Code',
+                decodePlaceholder: 'Paste Code here...',
+                decodeBtn: 'Decode File',
+                decodeFormatLabel: 'Download Extension:',
                 downloadDecodedBtn: 'Download',
-                decodeSuccess: 'Image successfully decoded and displayed.',
-                decodeError: 'Invalid Code. Please check if the Base64 string is correct.',
-                decodeErrorDownload: 'Please decode an image first before attempting to download.'
+                decodeSuccess: 'File successfully decoded.',
+                decodeError: 'Invalid Code. Please check the string.',
+                decodeErrorDownload: 'Please decode a file first before attempting to download.',
+                decodedFilenamePlaceholder: 'E.g., .mp3 or .html',
+                genericFileMessage: 'Non-visual file (e.g., HTML, MP3) uploaded. Ready for Base64 conversion.',
+                loginSuccess: 'Login successful. Redirecting to Premium.',
+                loginError: 'Invalid Activation Code. Please try again.',
+                instantPreview: 'Instant Preview'
             }
         };
 
-        // --- DOM Elements ---
-        const fileInput = document.getElementById('file-input');
-        const previewImg = document.getElementById('preview-img');
-        const fileStatus = document.getElementById('file-status');
-        const formatButtons = document.querySelectorAll('.format-btn');
-        const downloadBtn = document.getElementById('download-btn');
-        const secretInfoTxt = document.getElementById('secret-info-txt');
-        const secretInfoB64e = document.getElementById('secret-info-b64e');
-        const langToggle = document.getElementById('language-toggle');
-        const decodedImg = document.getElementById('decoded-img');
-        const decodeBtn = document.getElementById('decode-btn');
-        const decodeInput = document.getElementById('decode-input');
-        const decodeStatus = document.getElementById('decode-status');
-        const decodeDownloadGroup = document.getElementById('decode-download-group');
-        const decodeFormatSelect = document.getElementById('decode-format-select');
-        const downloadDecodedBtn = document.getElementById('download-decoded-btn');
+        // --- UTILITY FUNCTION: MIME to Extension ---
+        function getExtensionFromMime(mimeType) {
+            if (!mimeType) return '.bin';
+            
+            const mime = mimeType.toLowerCase().split(';')[0];
+            const mimeMap = {
+                'image/png': '.png',
+                'image/jpeg': '.jpg',
+                'image/webp': '.webp',
+                'image/gif': '.gif',
+                'video/mp4': '.mp4',
+                'video/webm': '.webm',
+                'audio/mpeg': '.mp3',
+                'audio/wav': '.wav',
+                'audio/ogg': '.ogg',
+                'application/pdf': '.pdf',
+                'application/json': '.json',
+                'text/html': '.html',
+                'text/css': '.css',
+                'text/javascript': '.js',
+                'text/plain': '.txt',
+            };
+            return mimeMap[mime] || '.bin';
+        }
+        
+        // --- 1. VIEW & LANGUAGE MANAGEMENT ---
+        function showView(viewId) {
+            Object.keys(VIEWS).forEach(id => {
+                VIEWS[id].classList.remove('active');
+            });
+            VIEWS[viewId].classList.add('active');
+            currentView = viewId;
+            document.body.style.background = viewId === 'premium' ? 'var(--color-prem-bg-dark)' : 'var(--color-std-bg-dark)';
+            updateUI(currentLang);
+        }
 
-        // --- LANGUAGE TOGGLE FUNCTION ---
         function updateUI(lang) {
             const data = LANG_DATA[lang];
-            document.getElementById('doc-title').textContent = 'BLACK LEO LLC - ' + data.docTitle;
-            langToggle.textContent = data.toggle;
-            document.getElementById('upload-title').textContent = data.uploadTitle;
-            document.getElementById('size-limit-text').textContent = data.sizeLimit;
-            document.getElementById('controls-title').textContent = data.controlsTitle;
-            document.getElementById('format-label').textContent = data.formatLabel;
-            document.getElementById('quality-label').textContent = data.qualityLabel;
-            document.getElementById('quality-info').textContent = data.qualityInfo;
-            
-            // Decode Section
-            document.getElementById('decode-label').textContent = data.decodeLabel;
-            decodeInput.placeholder = data.decodePlaceholder;
-            decodeBtn.textContent = data.decodeBtn;
-            if (document.getElementById('decode-format-label')) document.getElementById('decode-format-label').textContent = data.decodeFormatLabel;
-            downloadDecodedBtn.textContent = data.downloadDecodedBtn;
-
-            // Secret Info Titles
-            document.getElementById('secret-txt-title').textContent = data.secretTxtTitle;
-            document.getElementById('secret-txt-desc').textContent = data.secretTxtDesc;
-            document.getElementById('secret-b64e-title').textContent = data.secretB64eTitle;
-            document.getElementById('secret-b64e-desc').textContent = data.secretB64eDesc;
-            
-            // Update buttons text
-            document.querySelector('.format-btn[data-format="txt"]').textContent = data.formatTxt;
-            document.querySelector('.format-btn[data-format="b64e"]').textContent = data.formatB64e;
-
-            // Update download button status
-            if (isImageLoaded) {
-                downloadBtn.textContent = data.downloadBtn(selectedFormat);
-                fileStatus.textContent = data.statusLoaded + ' ' + selectedFile.name;
-            } else {
-                downloadBtn.textContent = data.statusStart;
-            }
             currentLang = lang;
-        }
+            
+            // Update shared styles
+            document.getElementById('doc-title').textContent = `BLACK LEO LLC - ${currentView === 'premium' ? data.docTitlePrem : data.docTitleStd}`;
 
-        langToggle.addEventListener('click', () => {
-            const newLang = currentLang === 'my' ? 'en' : 'my';
-            updateUI(newLang);
-        });
-
-        // Initialize UI with default language
-        updateUI(currentLang);
-
-
-        // --- 1. FILE UPLOAD HANDLER ---
-        fileInput.addEventListener('change', handleFileSelect);
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (file.size > FILE_SIZE_LIMIT) {
-                alert(LANG_DATA[currentLang].alertSize);
-                fileInput.value = '';
-                return;
+            // Standard View Update
+            if (VIEWS.standard.classList.contains('active') || currentView === 'standard') {
+                STD.languageToggle.textContent = data.toggle;
+                document.getElementById('upload-title-std').textContent = data.uploadTitle;
+                document.getElementById('size-limit-text-std').textContent = data.sizeLimitStd;
+                
+                if (isFileLoaded_std) {
+                    STD.downloadBtn.textContent = data.downloadBtn(selectedFormat_std);
+                    STD.fileStatus.textContent = data.statusLoaded + ' ' + selectedFile_std.name;
+                } else {
+                    STD.downloadBtn.textContent = data.statusStart;
+                }
             }
 
-            selectedFile = file;
-            fileStatus.textContent = LANG_DATA[currentLang].statusLoaded + ' ' + file.name;
-            isImageLoaded = true;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImg.src = e.target.result;
-                previewImg.style.display = 'block';
+            // Premium View Update (if active)
+            if (VIEWS.premium.classList.contains('active') || currentView === 'premium') {
+                PREM.languageToggle.textContent = data.toggle;
+                document.getElementById('upload-title-prem').textContent = data.uploadTitle;
+                document.getElementById('file-limit-text-premium').textContent = data.sizeLimitPrem;
+                PREM.instantPreviewBtn.textContent = data.instantPreview;
                 
-                // Hide decode view and download button if new file is uploaded
-                decodedImg.style.display = 'none';
-                decodeStatus.textContent = '';
-                decodeDownloadGroup.style.display = 'none';
-
-                downloadBtn.textContent = LANG_DATA[currentLang].downloadBtn(selectedFormat);
-                downloadBtn.disabled = false;
-                
-                // Ensure default format (JPEG) is active on upload
-                formatButtons.forEach(btn => btn.classList.remove('active'));
-                document.querySelector('.format-btn[data-format="jpeg"]').classList.add('active');
-                selectedFormat = 'jpeg';
-                downloadBtn.textContent = LANG_DATA[currentLang].downloadBtn(selectedFormat);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // --- 2. FORMAT SELECTION HANDLER ---
-        formatButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                formatButtons.forEach(btn => btn.classList.remove('active'));
-                
-                button.classList.add('active');
-                selectedFormat = button.dataset.format;
-                
-                downloadBtn.textContent = LANG_DATA[currentLang].downloadBtn(selectedFormat);
-
-                // Show/hide secret info panels
-                secretInfoTxt.style.display = selectedFormat === 'txt' ? 'block' : 'none';
-                secretInfoB64e.style.display = selectedFormat === 'b64e' ? 'block' : 'none';
-            });
-        });
-
-        // --- 3. CONVERSION AND DOWNLOAD LOGIC (Encode) ---
-        downloadBtn.addEventListener('click', startConversion);
-
-        function startConversion() {
-            if (!selectedFile || !isImageLoaded) return;
-
-            // Hide decode view when starting encode
-            decodedImg.style.display = 'none';
-            decodeStatus.textContent = '';
-            decodeDownloadGroup.style.display = 'none';
-            previewImg.style.display = 'block';
-
-            // SPECIAL CASE: Secret Features (TXT & B64E)
-            if (selectedFormat === 'txt' || selectedFormat === 'b64e') {
-                handleSecretConversion();
-                return;
+                if (isFileLoaded_prem) {
+                    PREM.downloadBtn.textContent = data.downloadBtn(selectedFormat_prem);
+                    PREM.fileStatus.textContent = data.statusLoaded + ' ' + selectedFile_prem.name;
+                } else {
+                    PREM.downloadBtn.textContent = data.statusStart;
+                }
             }
             
-            // Standard Image Conversion
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
+            // Re-update all buttons and fields that rely on currentLang (Decode Section)
+            document.getElementById('decode-label-std').textContent = data.decodeLabel;
+            STD.decodeInput.placeholder = data.decodePlaceholder;
+            STD.decodeBtn.textContent = data.decodeBtn;
+            if (document.getElementById('decode-format-label-std')) document.getElementById('decode-format-label-std').textContent = data.decodeFormatLabel;
+            STD.downloadDecodedBtn.textContent = data.downloadDecodedBtn;
+            STD.decodedFilenameInput.placeholder = data.decodedFilenamePlaceholder;
 
-                    let mimeType = `image/${selectedFormat}`;
-                    let quality = 1.0; 
-                    if (selectedFormat === 'jpeg' || selectedFormat === 'webp') {
-                        quality = JPEG_QUALITY;
-                    }
-
-                    const dataURL = canvas.toDataURL(mimeType, quality);
-                    downloadDataURL(dataURL, selectedFormat);
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(selectedFile);
-        }
-
-        // --- 4. SECRET FEATURE HANDLER (TXT & Base64 Encode) ---
-        function handleSecretConversion() {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const base64Data = event.target.result; 
-                let filename, mimeType, outputData;
-
-                if (selectedFormat === 'txt') {
-                    filename = selectedFile.name.replace(/\.[^/.]+$/, "") + ".txt";
-                    mimeType = 'text/plain';
-                    outputData = base64Data;
-                } else if (selectedFormat === 'b64e') {
-                    filename = selectedFile.name.replace(/\.[^/.]+$/, "") + ".base64";
-                    mimeType = 'text/plain';
-                    outputData = base64Data.split(',')[1]; 
-                }
-                
-                // Create Blob and trigger download
-                const blob = new Blob([outputData], { type: mimeType });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            };
-            reader.readAsDataURL(selectedFile);
-        }
-
-        // --- 5. DECODE FEATURE HANDLER (Decode Base64 to Image) ---
-        decodeBtn.addEventListener('click', decodeBase64);
-
-        function decodeBase64() {
-            const code = decodeInput.value.trim();
-            lastDecodedDataURL = null; // Clear previous decoded image
-            decodeDownloadGroup.style.display = 'none'; // Hide download options
-
-            if (code === '') {
-                decodeStatus.textContent = LANG_DATA[currentLang].decodeError;
-                decodeStatus.style.color = 'red';
-                return;
-            }
-
-            try {
-                let dataURL;
-                if (code.startsWith('data:image')) {
-                    dataURL = code; // Full Data URL (from TXT output)
-                } else {
-                    // Raw Base64 string (from B64E output) - Guess JPEG for initial load attempt
-                    // NOTE: This guessing might fail for other formats, a better solution would be to prompt the user for the original format.
-                    dataURL = 'data:image/jpeg;base64,' + code; 
-                }
-
-                // Attempt to load the image
-                decodedImg.src = dataURL;
-                decodedImg.onload = function() {
-                    // Success
-                    lastDecodedDataURL = dataURL; // Store for downloading
-                    decodedImg.style.display = 'block';
-                    previewImg.style.display = 'none'; // Hide regular preview
-                    decodeStatus.textContent = LANG_DATA[currentLang].decodeSuccess;
-                    decodeStatus.style.color = 'var(--color-text-main)'; // Use Halloween color for success
-                    decodeDownloadGroup.style.display = 'block'; // Show download options
-                };
-                decodedImg.onerror = function() {
-                    // Failure
-                    decodedImg.style.display = 'none';
-                    decodeStatus.textContent = LANG_DATA[currentLang].decodeError;
-                    decodeStatus.style.color = '#ff5700'; // Deep Orange for error
-                    decodeDownloadGroup.style.display = 'none';
-                };
-
-            } catch (e) {
-                decodeStatus.textContent = LANG_DATA[currentLang].decodeError;
-                decodeStatus.style.color = '#ff5700'; // Deep Orange for error
+            document.getElementById('decode-label-prem').textContent = data.decodeLabelPrem;
+            PREM.decodeInput.placeholder = data.decodePlaceholder;
+            PREM.decodeBtn.textContent = data.decodeBtn;
+            if (document.getElementById('decode-format-label-prem')) document.getElementById('decode-format-label-prem').textContent = data.decodeFormatLabel;
+            PREM.downloadDecodedBtn.textContent = data.downloadDecodedBtn;
+            PREM.decodedFilenameInput.placeholder = data.decodedFilenamePlaceholder;
+            
+            // If decoded file is present, update the filename input's default text
+            if (lastDecodedDataURL_std && !STD.decodedFilenameInput.value.includes('.')) {
+                const mime = lastDecodedDataURL_std.split(';')[0].split(':')[1];
+                STD.decodedFilenameInput.value = getExtensionFromMime(mime);
             }
         }
         
-        // --- 6. DECODE DOWNLOAD FEATURE ---
-        downloadDecodedBtn.addEventListener('click', downloadDecodedImage);
-
-        function downloadDecodedImage() {
-            if (!lastDecodedDataURL) {
-                decodeStatus.textContent = LANG_DATA[currentLang].decodeErrorDownload;
-                decodeStatus.style.color = '#ff5700';
-                return;
-            }
-
-            const downloadFormat = decodeFormatSelect.value;
+        // --- 2. ACTIVATION & LOGIN LOGIC ---
+        function initApp() {
+            document.body.classList.add('js-loaded'); 
             
-            // Re-convert the decoded image's data URL using Canvas to change its format before downloading
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
-
-                let mimeType = `image/${downloadFormat}`;
-                let quality = 1.0; 
-                if (downloadFormat === 'jpeg' || downloadFormat === 'webp') {
-                    quality = JPEG_QUALITY; // Apply 75% quality for decoded JPEG/WEBP download
-                }
-
-                const dataURL = canvas.toDataURL(mimeType, quality);
-                
-                // Use a default filename for decoded images
-                const filename = `decoded_image.${downloadFormat}`;
-                
-                // Trigger download
-                const a = document.createElement('a');
-                a.href = dataURL;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            };
-            img.src = lastDecodedDataURL;
+            if (localStorage.getItem('isPremium') === 'true') {
+                showView('premium');
+            } else {
+                showView('standard'); 
+            }
+            attachEventListeners();
         }
 
-        // --- 7. GENERIC DOWNLOAD FUNCTION ---
-        function downloadDataURL(dataURL, format) {
+        LOGIN.button.addEventListener('click', () => {
+            const code = LOGIN.input.value.trim().toUpperCase();
+            if (ACTIVATION_CODES.includes(code)) {
+                LOGIN.status.textContent = LANG_DATA[currentLang].loginSuccess;
+                LOGIN.status.style.color = 'var(--color-prem-gold)';
+                localStorage.setItem('isPremium', 'true');
+                setTimeout(() => showView('premium'), 1000); 
+            } else {
+                LOGIN.status.textContent = LANG_DATA[currentLang].loginError;
+                LOGIN.status.style.color = '#ff4444';
+            }
+        });
+
+        // Event listeners for view switching
+        STD.premiumAccessBtn.addEventListener('click', () => showView('login'));
+        PREM.logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('isPremium');
+            showView('standard');
+        });
+
+        // Language toggles
+        STD.languageToggle.addEventListener('click', () => updateUI(currentLang === 'my' ? 'en' : 'my'));
+        PREM.languageToggle.addEventListener('click', () => updateUI(currentLang === 'my' ? 'en' : 'my'));
+
+
+        // --- 3. COMMON UTILITY FUNCTIONS (Download, Hide Previews) ---
+        function hideAllPreviews(view) {
+            view.previewImg.style.display = 'none';
+            view.previewVideo.style.display = 'none';
+            view.previewAudio.style.display = 'none'; 
+            view.decodedImg.style.display = 'none';
+            view.decodedVideo.style.display = 'none';
+            view.decodedAudio.style.display = 'none'; 
+            view.genericMessage.style.display = 'none';
+            view.decodeStatus.textContent = '';
+            view.decodeDownloadGroup.style.display = 'none';
+            if (view === PREM) PREM.mimeTypeDisplay.textContent = 'MIME: N/A';
+        }
+        
+        function downloadFile(dataURL, filename) {
             const a = document.createElement('a');
-            const filename = selectedFile.name.replace(/\.[^/.]+$/, "") + `.${format}`;
             a.href = dataURL;
             a.download = filename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+        }
+
+        // --- 4. FILE UPLOAD HANDLER (Added Audio Preview) ---
+        function setupFileUpload(fileInput, view, limit) {
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (limit !== Infinity && file.size > limit) {
+                    alert(LANG_DATA[currentLang].alertSize);
+                    fileInput.value = '';
+                    return;
+                }
+
+                if (view === STD) {
+                    selectedFile_std = file;
+                    isFileLoaded_std = true;
+                    selectedFormat_std = 'txt';
+                } else {
+                    selectedFile_prem = file;
+                    isFileLoaded_prem = true;
+                    selectedFormat_prem = 'aes';
+                }
+                
+                view.fileStatus.textContent = LANG_DATA[currentLang].statusLoaded + ' ' + file.name;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    hideAllPreviews(view);
+                    
+                    if (file.type.startsWith('image/')) {
+                        view.previewImg.src = e.target.result;
+                        view.previewImg.style.display = 'block';
+                    } else if (file.type.startsWith('video/')) {
+                        view.previewVideo.src = e.target.result;
+                        view.previewVideo.style.display = 'block';
+                    } else if (file.type.startsWith('audio/')) { 
+                        view.previewAudio.src = e.target.result;
+                        view.previewAudio.style.display = 'block';
+                        view.genericMessage.textContent = `${LANG_DATA[currentLang].genericFileMessage} (Audio)`;
+                        view.genericMessage.style.display = 'block';
+                    } else {
+                        view.genericMessage.textContent = LANG_DATA[currentLang].genericFileMessage;
+                        view.genericMessage.style.display = 'block';
+                    }
+
+                    view.downloadBtn.textContent = LANG_DATA[currentLang].downloadBtn(view === STD ? selectedFormat_std : selectedFormat_prem);
+                    view.downloadBtn.disabled = false;
+                    
+                    // Reset format buttons and selector
+                    let defaultFormat = view === STD ? 'txt' : 'aes';
+                    view.formatButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.format === defaultFormat) {
+                            btn.classList.add('active');
+                        }
+                    });
+                    
+                    // Premium Feature: Reset Instant Preview
+                    if (view === PREM) {
+                        PREM.instantPreviewDisplay.textContent = 'Code has been changed.';
+                    }
+                };
+                reader.readAsDataURL(file); 
+            });
+        }
+        
+        // --- 5. FORMAT SELECTION HANDLER ---
+        function setupFormatSelection(formatButtons, view) {
+            formatButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    formatButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    let newFormat = button.dataset.format;
+                    
+                    if (view === STD) {
+                        selectedFormat_std = newFormat;
+                        if (isFileLoaded_std) {
+                            view.downloadBtn.textContent = LANG_DATA[currentLang].downloadBtn(selectedFormat_std);
+                        }
+                    } else {
+                        selectedFormat_prem = newFormat;
+                        if (isFileLoaded_prem) {
+                            view.downloadBtn.textContent = LANG_DATA[currentLang].downloadBtn(selectedFormat_prem);
+                        }
+                    }
+                });
+            });
+        }
+
+        // --- 6. CONVERSION/ENCODE LOGIC (Fixed Premium Download) ---
+        function setupConversion(downloadBtn, fileSelector) {
+            downloadBtn.addEventListener('click', () => {
+                const selectedFile = fileSelector === STD ? selectedFile_std : selectedFile_prem;
+                const selectedFormat = fileSelector === STD ? selectedFormat_std : selectedFormat_prem;
+                const isLoaded = fileSelector === STD ? isFileLoaded_std : isFileLoaded_prem;
+
+                if (!selectedFile || !isLoaded) return;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Data = event.target.result; 
+                    let filename, mimeType, outputData;
+                    
+                    // Base filename without extension
+                    const baseFilename = selectedFile.name.replace(/\.[^/.]+$/, "");
+
+                    // Standard (Base64)
+                    if (fileSelector === STD) {
+                        if (selectedFormat === 'txt') { // Data URL Base64
+                            filename = baseFilename + "_DataURL.txt";
+                            mimeType = 'text/plain';
+                            outputData = base64Data;
+                        } else if (selectedFormat === 'b64e') { // Raw Base64
+                            filename = baseFilename + ".base64";
+                            mimeType = 'text/plain';
+                            outputData = base64Data.split(',')[1]; 
+                        }
+                    // Premium (Base64 + Enhanced Security Label)
+                    } else { 
+                        let securityLabel = selectedFormat === 'aes' ? '_AES' : '_XOR';
+                        filename = baseFilename + `${securityLabel}.txt`;
+                        mimeType = 'text/plain';
+                        
+                        // Security Simulation
+                        const rawBase64 = base64Data.split(',')[1];
+                        if (selectedFormat === 'aes') {
+                            outputData = `###BLACK_LEO_AES_256_START###\n${rawBase64}\n###BLACK_LEO_AES_256_END###`;
+                        } else if (selectedFormat === 'xor') {
+                            outputData = `//XOR_SCRAMBLE_SECRET_KEY: ${btoa(new Date().getTime().toString())}\n${rawBase64}`;
+                        }
+                    }
+                    
+                    const blob = new Blob([outputData], { type: mimeType });
+                    const url = URL.createObjectURL(blob);
+                    
+                    downloadFile(url, filename); // Use the utility function
+                    URL.revokeObjectURL(url);
+                };
+                reader.readAsDataURL(selectedFile);
+            });
+        }
+
+        // --- 7. DECODE LOGIC (Added Auto-Detect Extension & Audio Preview) ---
+        function setupDecode(decodeBtn, decodeInput, view) {
+            decodeBtn.addEventListener('click', () => {
+                const code = decodeInput.value.trim();
+                
+                let lastDecodedDataURL;
+                if (view === STD) lastDecodedDataURL_std = null;
+                if (view === PREM) lastDecodedDataURL_prem = null;
+                
+                hideAllPreviews(view);
+
+                if (code === '') {
+                    view.decodeStatus.textContent = LANG_DATA[currentLang].decodeError;
+                    view.decodeStatus.style.color = '#ff4444'; 
+                    return;
+                }
+                
+                // 1. Clean the code for Premium formats if necessary
+                let cleanedCode = code;
+                if (view === PREM) {
+                    cleanedCode = cleanedCode.replace('###BLACK_LEO_AES_256_START###\n', '').replace('\n###BLACK_LEO_AES_256_END###', '');
+                    cleanedCode = cleanedCode.replace(/\/\/XOR_SCRAMBLE_SECRET_KEY: [a-zA-Z0-9=]+\n/, '');
+                }
+
+                // 2. Determine if it's a full Data URL or Raw Base64
+                let dataURL = cleanedCode;
+                let isFullDataURL = cleanedCode.startsWith('data:');
+                let rawBase64 = isFullDataURL ? cleanedCode.split(',')[1] : cleanedCode;
+
+                if (!isFullDataURL) {
+                    // Default to octet-stream for safety, and let the browser try to parse it
+                    dataURL = 'data:application/octet-stream;base64,' + rawBase64; 
+                }
+                
+                // 3. Set up the display
+                const mimeType = dataURL.split(';')[0].split(':')[1] || 'application/octet-stream';
+                
+                const isDecodedImage = mimeType.includes('image/');
+                const isDecodedVideo = mimeType.includes('video/');
+                const isDecodedAudio = mimeType.includes('audio/'); 
+                const isDecodedVisual = isDecodedImage || isDecodedVideo;
+                
+                let targetElement = view.decodedImg;
+                if (isDecodedVideo) targetElement = view.decodedVideo;
+                if (isDecodedAudio) targetElement = view.decodedAudio;
+                
+                let defaultExt = getExtensionFromMime(mimeType);
+                view.decodedFilenameInput.value = defaultExt;
+                
+                // Store the Data URL (Crucial for download)
+                if (view === STD) lastDecodedDataURL_std = dataURL;
+                if (view === PREM) lastDecodedDataURL_prem = dataURL;
+
+                if (isDecodedVisual || isDecodedAudio) {
+                    
+                    targetElement.src = dataURL;
+                    
+                    // Use a combined listener for both media and image
+                    const successHandler = function() {
+                        targetElement.style.display = 'block';
+                        view.decodeStatus.textContent = LANG_DATA[currentLang].decodeSuccess;
+                        view.decodeStatus.style.color = view === PREM ? 'var(--color-prem-gold)' : 'var(--color-std-white)'; 
+                        view.decodeDownloadGroup.style.display = 'block';
+                        if (view === PREM) PREM.mimeTypeDisplay.textContent = `MIME: ${mimeType}`;
+                    };
+                    
+                    const errorHandler = function() {
+                        // Fallback for failed visual/audio load (treat as generic file)
+                        targetElement.style.display = 'none';
+                        view.genericMessage.textContent = "Base64 Code မှ ဖိုင်ကို အောင်မြင်စွာ ပြန်ထုတ်ယူခဲ့သော်လည်း Preview မရရှိပါ။ Download ပြုလုပ်ရန် အသင့်ဖြစ်ပါပြီ။";
+                        view.genericMessage.style.display = 'block';
+                        view.decodeStatus.textContent = LANG_DATA[currentLang].decodeSuccess;
+                        view.decodeStatus.style.color = view === PREM ? 'var(--color-prem-gold)' : 'var(--color-std-white)'; 
+                        view.decodeDownloadGroup.style.display = 'block';
+                        if (view === PREM) PREM.mimeTypeDisplay.textContent = `MIME: ${mimeType} (Decode Successful)`;
+                    };
+                    
+                    targetElement.onload = targetElement.onloadeddata = successHandler;
+                    targetElement.onerror = errorHandler;
+
+                    // Ensure target element starts hidden while loading is attempted
+                    targetElement.style.display = 'none';
+                } else {
+                    // Handle non-media decode (e.g., PDF, HTML, TXT)
+                    view.genericMessage.textContent = "Base64 Code မှ ဖိုင်ကို အောင်မြင်စွာ ပြန်ထုတ်ယူခဲ့ပြီး၊ Download ပြုလုပ်ရန် အသင့်ဖြစ်ပါပြီ။";
+                    view.genericMessage.style.display = 'block';
+                    view.decodeStatus.textContent = LANG_DATA[currentLang].decodeSuccess;
+                    view.decodeStatus.style.color = view === PREM ? 'var(--color-prem-gold)' : 'var(--color-std-white)'; 
+                    view.decodeDownloadGroup.style.display = 'block';
+                    if (view === PREM) PREM.mimeTypeDisplay.textContent = `MIME: ${mimeType}`;
+                }
+            });
+        }
+
+        // --- 8. DECODE DOWNLOAD LOGIC ---
+        function setupDecodeDownload(downloadBtn, fileExtInput, view) {
+            downloadBtn.addEventListener('click', () => {
+                const lastDecodedDataURL = view === STD ? lastDecodedDataURL_std : lastDecodedDataURL_prem;
+
+                if (!lastDecodedDataURL) {
+                    view.decodeStatus.textContent = LANG_DATA[currentLang].decodeErrorDownload;
+                    view.decodeStatus.style.color = '#ff4444';
+                    return;
+                }
+
+                let fileExt = fileExtInput.value.trim().toLowerCase();
+                let baseFilename = 'decoded_file';
+                
+                if (fileExt && !fileExt.startsWith('.')) {
+                    fileExt = '.' + fileExt;
+                } else if (!fileExt) {
+                    // If user cleared the box, use the auto-detected extension from the DataURL
+                    const mime = lastDecodedDataURL.split(';')[0].split(':')[1];
+                    fileExt = getExtensionFromMime(mime);
+                }
+
+                downloadFile(lastDecodedDataURL, baseFilename + fileExt);
+            });
+        }
+        
+        // --- 9. PREMIUM INSTANT PREVIEW (Resiliency for long codes) ---
+        PREM.instantPreviewBtn.addEventListener('click', () => {
+            const code = PREM.decodeInput.value.trim();
+            if (code === '') {
+                PREM.instantPreviewDisplay.textContent = 'No code entered.';
+                return;
+            }
+            
+            // Limit preview length to prevent browser lockup on huge codes
+            const MAX_PREVIEW_LENGTH = 1000;
+            const previewText = code.substring(0, MAX_PREVIEW_LENGTH) + (code.length > MAX_PREVIEW_LENGTH ? '...\n[Code is too long, truncated for preview]' : '');
+            PREM.instantPreviewDisplay.textContent = previewText;
+        });
+
+
+        // --- 10. ATTACH ALL EVENT LISTENERS ---
+        function attachEventListeners() {
+            // Standard
+            setupFileUpload(STD.fileInput, STD, STANDARD_LIMIT);
+            setupFormatSelection(STD.formatButtons, STD);
+            setupConversion(STD.downloadBtn, STD);
+            setupDecode(STD.decodeBtn, STD.decodeInput, STD);
+            setupDecodeDownload(STD.downloadDecodedBtn, STD.decodedFilenameInput, STD);
+
+            // Premium
+            setupFileUpload(PREM.fileInput, PREM, PREMIUM_LIMIT);
+            setupFormatSelection(PREM.formatButtons, PREM);
+            setupConversion(PREM.downloadBtn, PREM); 
+            setupDecode(PREM.decodeBtn, PREM.decodeInput, PREM);
+            setupDecodeDownload(PREM.downloadDecodedBtn, PREM.decodedFilenameInput, PREM);
         }
     </script>
 
